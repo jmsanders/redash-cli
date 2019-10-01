@@ -31,6 +31,37 @@ def test_get_raises_for_redirects(client):
 
 
 @responses.activate
+def test_get_with_params(client):
+    body = "Response Body"
+    params = dict(page_size=2)
+    responses.add(
+        responses.GET, client.url("queries?page_size=2"), status=200, json=body
+    )
+
+    response = client.get("queries", params=params)
+    assert response == body
+
+
+@responses.activate
+def test_get_gets_all_paginated_responses(client):
+    responses.add(
+        responses.GET,
+        client.url("queries"),
+        status=200,
+        json=dict(count=2, page=1, page_size=1, results=[1]),
+    )
+    responses.add(
+        responses.GET,
+        client.url("queries"),
+        status=200,
+        json=dict(count=2, page=2, page_size=1, results=[2]),
+    )
+
+    response = client.get("queries")
+    assert response == [1, 2]
+
+
+@responses.activate
 def test_post_returns_response_body(client):
     body = "Response Body"
     responses.add(
