@@ -9,7 +9,7 @@ class RedashClient:
 
     @property
     def base_url(self):
-        return os.path.join("https://redash.io", self.config.organization, "api")
+        return os.path.join("https://app.redash.io", self.config.organization, "api")
 
     @property
     def headers(self):
