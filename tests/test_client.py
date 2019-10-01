@@ -62,6 +62,25 @@ def test_get_gets_all_paginated_responses(client):
 
 
 @responses.activate
+def test_get_can_limit_the_number_of_results(client):
+    responses.add(
+        responses.GET,
+        client.url("queries"),
+        status=200,
+        json=dict(count=3, page=1, page_size=2, results=[1, 2]),
+    )
+    responses.add(
+        responses.GET,
+        client.url("queries"),
+        status=200,
+        json=dict(count=3, page=2, page_size=2, results=[3]),
+    )
+
+    response = client.get("queries", limit=1)
+    assert response == [1]
+
+
+@responses.activate
 def test_post_returns_response_body(client):
     body = "Response Body"
     responses.add(

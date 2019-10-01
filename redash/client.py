@@ -18,7 +18,7 @@ class RedashClient:
     def url(self, url_part):
         return os.path.join(self.base_url, url_part)
 
-    def get(self, url_part, params=None):
+    def get(self, url_part, params=None, limit=None):
         paginate = True
         results = []
         while paginate:
@@ -33,13 +33,15 @@ class RedashClient:
             payload = response.json()
             if self._is_paginated_response(payload):
                 results += payload.get("results")
-                paginate = self._has_more_pages(payload)
+                paginate = self._keep_paginating(payload, limit)
             else:
                 return payload
-        return results
+        return results[:limit]
 
-    def _has_more_pages(self, payload):
-        return payload.get("page") * payload.get("page_size") < payload.get("count")
+    def _keep_paginating(self, payload, limit):
+        return payload.get("page") * payload.get("page_size") < (
+            limit or payload.get("count")
+        )
 
     def _is_paginated_response(self, payload):
         return isinstance(payload, dict) and payload.get("results")
