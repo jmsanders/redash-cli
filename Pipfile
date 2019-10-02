@@ -9,8 +9,7 @@ black = "*"
 responses = "*"
 
 [packages]
-requests = "*"
-click = "*"
+redash-cli = {path = ".",editable = true}
 
 [requires]
 python_version = "3.7"
