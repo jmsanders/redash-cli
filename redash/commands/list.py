@@ -16,7 +16,13 @@ def data_sources(client):
 
 
 @list_.command(help="List your queries.")
-@click.option("--limit", type=int, default=25, help="Maximum number of results.")
+@click.option(
+    "--limit",
+    type=int,
+    default=25,
+    help="Maximum number of results.",
+    show_default=True,
+)
 @click.pass_obj
 def queries(client, limit):
     print(json.dumps((client.get("queries/my", limit=limit))))
