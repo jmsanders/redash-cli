@@ -10,6 +10,11 @@ class MockClient:
         self.called_endpoint = endpoint
         return self.return_value
 
+    def post(self, endpoint, payload=None):
+        self.called_endpoint = endpoint
+        self.recorded_payload = payload
+        return self.return_value
+
 
 @pytest.fixture
 def cli_runner():
