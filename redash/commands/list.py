@@ -23,6 +23,10 @@ def data_sources(client):
     help="Maximum number of results.",
     show_default=True,
 )
+@click.option(
+    "--mine", type=bool, default=True, help="Return only my queries.", show_default=True
+)
 @click.pass_obj
-def queries(client, limit):
-    print(json.dumps((client.get("queries/my", limit=limit))))
+def queries(client, limit, mine):
+    endpoint = "queries/my" if mine else "queries"
+    print(json.dumps((client.get(endpoint, limit=limit))))
