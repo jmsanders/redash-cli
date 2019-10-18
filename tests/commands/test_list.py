@@ -1,9 +1,3 @@
-import pytest
-
-import json
-import requests
-import responses
-
 from redash.commands.list import list_
 
 

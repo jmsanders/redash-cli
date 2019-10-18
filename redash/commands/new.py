@@ -18,7 +18,9 @@ DEFAULT_QUERY_NAME = "New redash-cli Query"
 @click.pass_obj
 def new(client, query, data_source_id, name):
     print(
-        client.post(
-            "queries", dict(query=query, data_source_id=data_source_id, name=name)
+        json.dumps(
+            client.post(
+                "queries", dict(query=query, data_source_id=data_source_id, name=name)
+            )
         )
     )

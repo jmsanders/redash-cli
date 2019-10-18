@@ -1,5 +1,3 @@
-import pytest
-
 from redash.commands.configure import configure
 
 
