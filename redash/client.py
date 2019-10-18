@@ -1,4 +1,6 @@
+import datetime
 import os
+import time
 
 import requests
 
@@ -56,3 +58,21 @@ class RedashClient:
         if response.is_redirect or not response.ok:
             raise Exception()
         return response.json()
+
+    def poll(self, url_part, timeout=datetime.timedelta(minutes=1), sleep=1):
+        start_time = datetime.datetime.now()
+        response = self.get(url_part)
+
+        while not self._is_finished(response.get("job")) and not self._is_timed_out(
+            start_time, timeout
+        ):
+            time.sleep(sleep)
+            response = self.get(url_part)
+
+        return response
+
+    def _is_finished(self, job):
+        return job.get("status") in [3, 4]
+
+    def _is_timed_out(self, start_time, timeout):
+        return datetime.datetime.now() >= start_time + timeout

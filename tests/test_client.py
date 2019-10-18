@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pytest
 
 import responses
@@ -105,3 +107,87 @@ def test_post_raises_for_redirects(client):
 
     with pytest.raises(Exception):
         client.post("queries")
+
+
+@responses.activate
+def test_poll_until_success(client):
+    job_id = 1
+
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status=1)),
+    )
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status=3)),
+    )
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status="Not Called")),
+    )
+
+    response = client.poll(f"jobs/{job_id}", sleep=0)
+
+    assert response.get("job").get("status") == 3
+    assert len(responses.calls) == 2
+    assert not responses.assert_all_requests_are_fired
+
+
+@responses.activate
+def test_poll_until_failure(client):
+    job_id = 1
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status=1)),
+    )
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status=4)),
+    )
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status="Never Called")),
+    )
+
+    response = client.poll(f"jobs/{job_id}", sleep=0)
+
+    assert response.get("job").get("status") == 4
+    assert len(responses.calls) == 2
+    assert not responses.assert_all_requests_are_fired
+
+
+@responses.activate
+def test_poll_until_timeout(client):
+    job_id = 1
+
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status="Make this request")),
+    )
+
+    responses.add(
+        responses.GET,
+        client.url(f"jobs/{job_id}"),
+        status=200,
+        json=dict(job=dict(status="Timeout before this request")),
+    )
+
+    response = client.poll(f"jobs/{job_id}", timeout=timedelta(seconds=0))
+
+    assert response.get("job").get("status") == "Make this request"
+    assert len(responses.calls) == 1
+    assert not responses.assert_all_requests_are_fired
