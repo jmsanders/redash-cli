@@ -25,3 +25,7 @@ class Config:
     @property
     def organization(self):
         return self.get("organization")
+
+    @property
+    def data_source_id(self):
+        return self.get("data_source_id")

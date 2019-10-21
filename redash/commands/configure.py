@@ -21,3 +21,10 @@ def api_key(client, key):
 @click.pass_obj
 def organization(client, organization):
     client.config.set("organization", organization)
+
+
+@configure.command(help="Your default Data Source ID.")
+@click.argument("data-source-id")
+@click.pass_obj
+def data_source_id(client, data_source_id):
+    client.config.set("data_source_id", data_source_id)

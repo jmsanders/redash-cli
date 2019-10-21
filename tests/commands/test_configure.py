@@ -13,3 +13,12 @@ def test_set_organization(cli_runner, client):
     result = cli_runner.invoke(configure, ["organization", organization], obj=client)
     assert not result.exception
     assert client.config.organization == organization
+
+
+def test_set_data_source_id(cli_runner, client):
+    data_source_id = "data-source-id"
+    result = cli_runner.invoke(
+        configure, ["data-source-id", data_source_id], obj=client
+    )
+    assert not result.exception
+    assert client.config.data_source_id == data_source_id
