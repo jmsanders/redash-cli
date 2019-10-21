@@ -1,15 +1,18 @@
 import os
 import subprocess
 
-
 class Editor:
-    def __init__(self, client, path="/tmp/redash-cli.sql"):
+    def __init__(self, path="/tmp/redash-cli.sql"):
         self.path = path
-        self.client = client
 
-    def save_query_to_file(self, query_id):
+    def edit(self, client, query_id):
+        self.save_query_to_file(client, query_id)
+        self.open()
+        return self.read_query_from_file()
+
+    def save_query_to_file(self, client, query_id):
         with open(self.path, "w") as f:
-            response = self.client.get(f"queries/{query_id}")
+            response = client.get(f"queries/{query_id}")
             f.write(response.get("query"))
 
     def read_query_from_file(self):

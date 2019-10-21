@@ -23,7 +23,6 @@ class MockClient:
         self.called_endpoint = endpoint
         return self.return_values.pop(0)
 
-
 @pytest.fixture
 def config(tmp_path):
     config = Config(tmp_path / "config.ini")
@@ -36,15 +35,10 @@ def config(tmp_path):
 def client(config):
     return RedashClient(config)
 
-
+    
 @pytest.fixture
 def mock_client():
-    def mock_client_factory(return_values=None):
-        return MockClient(return_values)
+    def mock_client_factory(return_value):
+        return MockClient(return_value)
 
     return mock_client_factory
-
-
-@pytest.fixture
-def sql_file(tmp_path):
-    return tmp_path / "redash-cli.sql"
