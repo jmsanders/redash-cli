@@ -1,7 +1,6 @@
-import json
-
 import click
 
+from redash import utils
 from redash.commands.download import perform_download
 
 
@@ -22,6 +21,6 @@ def edit(client, query_id, query, execute):
         query = click.edit(text=initial_query, extension=".sql")
     response = client.post(f"queries/{query_id}", dict(query=query))
     if execute:
-        print(json.dumps(perform_download(client, query_id)))
+        utils.echo(perform_download(client, query_id))
     else:
-        print(json.dumps(response))
+        utils.echo(response)

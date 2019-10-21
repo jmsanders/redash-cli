@@ -42,7 +42,7 @@ def test_new_query_with_skip_execution(cli_runner, mock_client):
     )
 
     assert not result.exception
-    assert json.dumps(expected_new_query_response) in result.stdout
+    assert expected_new_query_response == json.loads(result.stdout)
     assert "results" not in client.called_endpoint
 
 
@@ -56,7 +56,7 @@ def test_new_query_without_name_provides_name(cli_runner, mock_client):
     )
 
     assert not result.exception
-    assert json.dumps(expected) in result.stdout
+    assert expected == json.loads(result.stdout)
     assert client.recorded_payload.get("name") == DEFAULT_QUERY_NAME
 
 
@@ -80,5 +80,5 @@ def test_new_query_with_name(cli_runner, mock_client):
     )
 
     assert not result.exception
-    assert json.dumps(expected_result) in result.stdout
+    assert expected_result == json.loads(result.stdout)
     assert client.recorded_payload.get("name") == expected_name

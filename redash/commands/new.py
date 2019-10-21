@@ -1,7 +1,6 @@
-import json
-
 import click
 
+from redash import utils
 from redash.commands.download import perform_download
 
 DEFAULT_QUERY_NAME = "New redash-cli Query"
@@ -33,6 +32,6 @@ def new(client, query, data_source_id, name, execute):
     )
     query_id = response.get("id")
     if execute:
-        print(json.dumps(perform_download(client, query_id)))
+        utils.echo(perform_download(client, query_id))
     else:
-        print(json.dumps(response))
+        utils.echo(response)

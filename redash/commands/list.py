@@ -1,6 +1,6 @@
-import json
-
 import click
+
+from redash import utils
 
 
 @click.group(name="list", help="List a Redash object.")
@@ -12,7 +12,7 @@ def list_(client):
 @list_.command(help="List data sources.")
 @click.pass_obj
 def data_sources(client):
-    print(json.dumps((client.get("data_sources"))))
+    utils.echo(client.get("data_sources"))
 
 
 @list_.command(help="List your queries.")
@@ -29,4 +29,4 @@ def data_sources(client):
 @click.pass_obj
 def queries(client, limit, mine):
     endpoint = "queries/my" if mine else "queries"
-    print(json.dumps((client.get(endpoint, limit=limit))))
+    utils.echo(client.get(endpoint, limit=limit))
