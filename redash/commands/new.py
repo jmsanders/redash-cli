@@ -2,6 +2,8 @@ import json
 
 import click
 
+from redash.commands.download import perform_download
+
 DEFAULT_QUERY_NAME = "New redash-cli Query"
 
 
@@ -15,12 +17,20 @@ DEFAULT_QUERY_NAME = "New redash-cli Query"
     help="Query name.",
     show_default=True,
 )
+@click.option(
+    "--execute",
+    type=bool,
+    default=True,
+    help="Execute the query and download its results.",
+    show_default=True,
+)
 @click.pass_obj
-def new(client, query, data_source_id, name):
-    print(
-        json.dumps(
-            client.post(
-                "queries", dict(query=query, data_source_id=data_source_id, name=name)
-            )
-        )
+def new(client, query, data_source_id, name, execute):
+    response = client.post(
+        "queries", dict(query=query, data_source_id=data_source_id, name=name)
     )
+    query_id = response.get("id")
+    if execute:
+        print(json.dumps(perform_download(client, query_id)))
+    else:
+        print(json.dumps(response))
