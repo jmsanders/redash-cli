@@ -41,3 +41,18 @@ def test_edit_query_skip_execution(cli_runner, mock_client):
     assert not result.exception
     assert expected in result.stdout
     assert client.called_endpoint == f"queries/{query_id}"
+
+
+def test_edit_query_edits_last_query(cli_runner, mock_client):
+    query_id = 12345
+    list_queries_response = [dict(id=query_id)]
+    expected = "result"
+
+    client = mock_client([list_queries_response, expected])
+    result = cli_runner.invoke(
+        edit, ["--query", "select 1", "--execute", False], obj=client
+    )
+
+    assert not result.exception
+    assert expected in result.stdout
+    assert client.called_endpoint == f"queries/{query_id}"
