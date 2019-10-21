@@ -41,12 +41,3 @@ def test_open(editor, sql_file, mocker):
     editor.open()
 
     subprocess.call.assert_called_once_with([editor.editor, sql_file])
-
-
-def test_reset(editor, sql_file):
-    with open(sql_file, "w") as f:
-        f.write("Initial content")
-
-    assert editor.read_query_from_file()
-    editor.reset()
-    assert not editor.read_query_from_file()

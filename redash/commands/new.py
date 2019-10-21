@@ -7,15 +7,8 @@ from redash.commands.download import perform_download
 DEFAULT_QUERY_NAME = "New redash-cli Query"
 
 
-@click.pass_obj
-def create_query(context):
-    context.editor.reset()
-    context.editor.open()
-    return context.editor.read_query_from_file()
-
-
 @click.command(help="Submit a new query.")
-@click.option("--query", type=str, default=create_query, help="SQL query string.")
+@click.option("--query", type=str, required=True, help="SQL query string.")
 @click.option("--data-source-id", type=int, required=True, help="Data Source ID.")
 @click.option(
     "--name",

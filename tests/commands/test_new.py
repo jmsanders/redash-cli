@@ -1,7 +1,5 @@
 import json
 
-import pytest
-
 from redash.commands.new import new, DEFAULT_QUERY_NAME
 
 
@@ -82,19 +80,3 @@ def test_new_query_with_name(cli, mock_client):
     assert not result.exception
     assert json.dumps(expected_result) in result.stdout
     assert client.recorded_payload.get("name") == expected_name
-
-
-def test_new_without_query_opens_empty_editor(cli, mock_client, mock_editor, sql_file):
-    expected = dict(id=1)
-    client = mock_client(expected)
-
-    assert not mock_editor.opened
-    with pytest.raises(Exception):
-        open(sql_file)
-
-    result = cli(new, ["--data-source-id", 1, "--execute", False], client=client)
-
-    assert not result.exception
-    assert json.dumps(expected) in result.stdout
-    assert mock_editor.opened
-    assert mock_editor.read_query_from_file() == ""
