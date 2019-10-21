@@ -8,7 +8,7 @@ DEFAULT_QUERY_NAME = "New redash-cli Query"
 
 
 @click.command(help="Submit a new query.")
-@click.option("--query", type=str, required=True, help="SQL query string.")
+@click.option("--query", type=str, help="SQL query string.")
 @click.option("--data-source-id", type=int, required=True, help="Data Source ID.")
 @click.option(
     "--name",
@@ -26,6 +26,8 @@ DEFAULT_QUERY_NAME = "New redash-cli Query"
 )
 @click.pass_obj
 def new(client, query, data_source_id, name, execute):
+    if not query:
+        query = click.edit(extension=".sql")
     response = client.post(
         "queries", dict(query=query, data_source_id=data_source_id, name=name)
     )
