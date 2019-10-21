@@ -1,57 +1,55 @@
 from redash.commands.list import list_
 
 
-def test_list_queries(cli_runner, mock_client):
+def test_list_queries(cli, mock_client):
     expected = "result"
-    result = cli_runner.invoke(list_, ["queries"], obj=mock_client(expected))
+    result = cli(list_, ["queries"], client=mock_client(expected))
 
     assert not result.exception
     assert expected in result.stdout
 
 
-def test_list_queries_with_limit(cli_runner, mock_client):
+def test_list_queries_with_limit(cli, mock_client):
     expected = "result"
-    result = cli_runner.invoke(
-        list_, ["queries", "--limit", 1], obj=mock_client(expected)
-    )
+    result = cli(list_, ["queries", "--limit", 1], client=mock_client(expected))
 
     assert not result.exception
     assert expected in result.stdout
 
 
-def test_list_my_queries(cli_runner, mock_client):
+def test_list_my_queries(cli, mock_client):
     expected = "result"
     client = mock_client(expected)
-    result = cli_runner.invoke(list_, ["queries", "--mine", True], obj=client)
+    result = cli(list_, ["queries", "--mine", True], client=client)
 
     assert not result.exception
     assert expected in result.stdout
     assert client.called_endpoint == "queries/my"
 
 
-def test_list_my_queries_by_default(cli_runner, mock_client):
+def test_list_my_queries_by_default(cli, mock_client):
     expected = "result"
     client = mock_client(expected)
-    result = cli_runner.invoke(list_, ["queries"], obj=client)
+    result = cli(list_, ["queries"], client=client)
 
     assert not result.exception
     assert expected in result.stdout
     assert client.called_endpoint == "queries/my"
 
 
-def test_list_everybodys_queries(cli_runner, mock_client):
+def test_list_everybodys_queries(cli, mock_client):
     expected = "result"
     client = mock_client(expected)
-    result = cli_runner.invoke(list_, ["queries", "--mine", False], obj=client)
+    result = cli(list_, ["queries", "--mine", False], client=client)
 
     assert not result.exception
     assert expected in result.stdout
     assert client.called_endpoint == "queries"
 
 
-def test_list_data_sources(cli_runner, mock_client):
+def test_list_data_sources(cli, mock_client):
     expected = "result"
-    result = cli_runner.invoke(list_, ["data-sources"], obj=mock_client(expected))
+    result = cli(list_, ["data-sources"], client=mock_client(expected))
 
     assert not result.exception
     assert expected in result.stdout

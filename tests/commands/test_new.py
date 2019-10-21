@@ -3,7 +3,7 @@ import json
 from redash.commands.new import new, DEFAULT_QUERY_NAME
 
 
-def test_new_query(cli_runner, mock_client):
+def test_new_query(cli, mock_client):
     query_id = 12345
     expected_new_query_response = dict(id=query_id)
     job_id_response = dict(job=dict(id=1))
@@ -19,9 +19,7 @@ def test_new_query(cli_runner, mock_client):
             download_response,
         ]
     )
-    result = cli_runner.invoke(
-        new, ["--query", "select 1", "--data-source-id", 1], obj=client
-    )
+    result = cli(new, ["--query", "select 1", "--data-source-id", 1], client=client)
 
     assert not result.exception
     assert download_response in result.stdout
@@ -30,15 +28,15 @@ def test_new_query(cli_runner, mock_client):
     )
 
 
-def test_new_query_with_skip_execution(cli_runner, mock_client):
+def test_new_query_with_skip_execution(cli, mock_client):
     query_id = 12345
     expected_new_query_response = dict(id=query_id)
 
     client = mock_client([expected_new_query_response])
-    result = cli_runner.invoke(
+    result = cli(
         new,
         ["--query", "select 1", "--data-source-id", 1, "--execute", False],
-        obj=client,
+        client=client,
     )
 
     assert not result.exception
@@ -46,13 +44,13 @@ def test_new_query_with_skip_execution(cli_runner, mock_client):
     assert "results" not in client.called_endpoint
 
 
-def test_new_query_without_name_provides_name(cli_runner, mock_client):
+def test_new_query_without_name_provides_name(cli, mock_client):
     expected = dict(id=12345)
     client = mock_client(expected)
-    result = cli_runner.invoke(
+    result = cli(
         new,
         ["--query", "select 1", "--data-source-id", 1, "--execute", False],
-        obj=client,
+        client=client,
     )
 
     assert not result.exception
@@ -60,11 +58,11 @@ def test_new_query_without_name_provides_name(cli_runner, mock_client):
     assert client.recorded_payload.get("name") == DEFAULT_QUERY_NAME
 
 
-def test_new_query_with_name(cli_runner, mock_client):
+def test_new_query_with_name(cli, mock_client):
     expected_result = dict(id=12345)
     expected_name = "Custom redash-cli query name"
     client = mock_client(expected_result)
-    result = cli_runner.invoke(
+    result = cli(
         new,
         [
             "--query",
@@ -76,7 +74,7 @@ def test_new_query_with_name(cli_runner, mock_client):
             "--execute",
             False,
         ],
-        obj=client,
+        client=client,
     )
 
     assert not result.exception

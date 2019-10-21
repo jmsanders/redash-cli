@@ -16,9 +16,9 @@ from redash.commands.download import perform_download
     show_default=True,
 )
 @click.pass_obj
-def edit(client, query_id, query, execute):
-    response = client.post(f"queries/{query_id}", dict(query=query))
+def edit(context, query_id, query, execute):
+    response = context.client.post(f"queries/{query_id}", dict(query=query))
     if execute:
-        print(json.dumps(perform_download(client, query_id)))
+        print(json.dumps(perform_download(context.client, query_id)))
     else:
         print(json.dumps(response))

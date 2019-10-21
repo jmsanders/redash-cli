@@ -5,14 +5,14 @@ import click
 
 @click.group(name="list", help="List a Redash object.")
 @click.pass_obj
-def list_(client):
+def list_(context):
     pass
 
 
 @list_.command(help="List data sources.")
 @click.pass_obj
-def data_sources(client):
-    print(json.dumps((client.get("data_sources"))))
+def data_sources(context):
+    print(json.dumps((context.client.get("data_sources"))))
 
 
 @list_.command(help="List your queries.")
@@ -27,6 +27,6 @@ def data_sources(client):
     "--mine", type=bool, default=True, help="Return only my queries.", show_default=True
 )
 @click.pass_obj
-def queries(client, limit, mine):
+def queries(context, limit, mine):
     endpoint = "queries/my" if mine else "queries"
-    print(json.dumps((client.get(endpoint, limit=limit))))
+    print(json.dumps((context.client.get(endpoint, limit=limit))))

@@ -25,12 +25,12 @@ DEFAULT_QUERY_NAME = "New redash-cli Query"
     show_default=True,
 )
 @click.pass_obj
-def new(client, query, data_source_id, name, execute):
-    response = client.post(
+def new(context, query, data_source_id, name, execute):
+    response = context.client.post(
         "queries", dict(query=query, data_source_id=data_source_id, name=name)
     )
     query_id = response.get("id")
     if execute:
-        print(json.dumps(perform_download(client, query_id)))
+        print(json.dumps(perform_download(context.client, query_id)))
     else:
         print(json.dumps(response))

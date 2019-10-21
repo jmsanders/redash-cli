@@ -6,8 +6,8 @@ import click
 @click.command(help="Execute a query and get the results.")
 @click.option("--query-id", type=int, required=True, help="ID of query to execute.")
 @click.pass_obj
-def download(client, query_id):
-    print(json.dumps(perform_download(client, query_id)))
+def download(context, query_id):
+    print(json.dumps(perform_download(context.client, query_id)))
 
 
 def perform_download(client, query_id):

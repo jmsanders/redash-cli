@@ -1,7 +1,7 @@
 from redash.commands.edit import edit
 
 
-def test_edit_query(cli_runner, mock_client):
+def test_edit_query(cli, mock_client):
     query_id = 12345
     expected_new_query_response = dict(id=query_id)
     job_id_response = dict(job=dict(id=1))
@@ -17,9 +17,7 @@ def test_edit_query(cli_runner, mock_client):
             download_response,
         ]
     )
-    result = cli_runner.invoke(
-        edit, ["--query-id", query_id, "--query", "select 1"], obj=client
-    )
+    result = cli(edit, ["--query-id", query_id, "--query", "select 1"], client=client)
 
     assert not result.exception
     assert download_response in result.stdout
@@ -28,14 +26,14 @@ def test_edit_query(cli_runner, mock_client):
     )
 
 
-def test_edit_query_skip_execution(cli_runner, mock_client):
+def test_edit_query_skip_execution(cli, mock_client):
     query_id = 12345
     expected = "result"
     client = mock_client(expected)
-    result = cli_runner.invoke(
+    result = cli(
         edit,
         ["--query-id", query_id, "--query", "select 1", "--execute", False],
-        obj=client,
+        client=client,
     )
 
     assert not result.exception
