@@ -1,3 +1,7 @@
+import json
+
+import pytest
+
 from redash.commands.edit import edit
 
 
@@ -39,3 +43,24 @@ def test_edit_query_skip_execution(cli, mock_client):
     assert not result.exception
     assert expected in result.stdout
     assert client.called_endpoint == f"queries/{query_id}"
+
+
+def test_edit_without_query_opens_query_in_editor(
+    cli, mock_client, mock_editor, sql_file
+):
+    query_id = 12345
+    query = "select 1"
+    get_query_response = dict(query=query)
+    post_query_response = "result"
+    client = mock_client([get_query_response, post_query_response])
+
+    assert not mock_editor.opened
+    with pytest.raises(Exception):
+        open(sql_file)
+
+    result = cli(edit, ["--query-id", query_id, "--execute", False], client=client)
+
+    assert not result.exception
+    assert json.dumps(post_query_response) in result.stdout
+    assert mock_editor.opened
+    assert mock_editor.read_query_from_file() == query

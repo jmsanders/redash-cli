@@ -20,6 +20,10 @@ class Editor:
     def open(self):
         subprocess.call([self.editor, self.path])
 
+    def reset(self):
+        with open(self.path, "w") as f:
+            f.write("")
+
     @property
     def editor(self):
         return os.environ.get("EDITOR", "vim")
