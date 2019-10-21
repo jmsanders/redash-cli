@@ -1,3 +1,5 @@
+import os
+
 import click
 
 from redash.config import Config
@@ -19,7 +21,7 @@ class Context:
 @click.group(help="Query Redash from your $EDITOR of choice.")
 @click.pass_context
 def cli(ctx):
-    config = Config("config.ini")
+    config = Config(os.path.join(os.path.expanduser("~"), ".redash-cli.ini"))
     client = RedashClient(config)
     editor = Editor(client)
     ctx.obj = Context(client, editor)
