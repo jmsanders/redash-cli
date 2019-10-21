@@ -7,7 +7,6 @@ verify_ssl = true
 black = "*"
 ipython = "*"
 pytest = "*"
-pytest-mock = "*"
 pytest-flakes = "*"
 responses = "*"
 
